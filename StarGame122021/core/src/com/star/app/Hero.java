@@ -42,12 +42,27 @@ public class Hero {
             position.y += MathUtils.sinDeg(angle) * 240.0f * dt;
             lastDisplacement.set(MathUtils.cosDeg(angle) * 240.0f * dt,
                     MathUtils.sinDeg(angle) * 240.0f * dt);
+        }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                position.x += MathUtils.cosDeg(angle) * -120.0f * dt;
+                position.y += MathUtils.sinDeg(angle) * -120.0f * dt;
+                lastDisplacement.set(MathUtils.cosDeg(angle) * -120.0f * dt,
+                        MathUtils.sinDeg(angle) * -120.0f * dt);
         } else {
             lastDisplacement.set(0, 0);
         }
 
         if (position.x < 32) {
             position.x = 32;
+        }
+        if (position.x > 1248) {
+            position.x = 1248;
+        }
+        if (position.y > 688) {
+            position.y = 688;
+        }
+        if (position.y < 32) {
+            position.y = 32;
         }
 
 
