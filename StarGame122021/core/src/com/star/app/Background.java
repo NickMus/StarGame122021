@@ -1,5 +1,8 @@
 package com.star.app;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -19,8 +22,8 @@ public class Background {
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - starGame.getHero().getLastDisplacement().x * 15) * dt;
-            position.y += (velocity.y - starGame.getHero().getLastDisplacement().y * 15) * dt;
+            position.x += (velocity.x - starGame.getHero().getLastDisplacement().x * 25) * dt;
+            position.y += (velocity.y - starGame.getHero().getLastDisplacement().y * 25) * dt;
 
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
@@ -36,7 +39,7 @@ public class Background {
         public Asteroid() {
             this.position = new Vector2(MathUtils.random(-200, ScreenManager.SCREEN_WIDTH + 200),
                     MathUtils.random(-200, ScreenManager.SCREEN_HEIGHT + 200));
-            this.velocity = new Vector2(MathUtils.random(-60, -5), 0);
+            this.velocity = new Vector2(MathUtils.random(-60, -5), MathUtils.random(-15,15));
         }
 
         public void update(float dt) {
@@ -59,12 +62,16 @@ public class Background {
     private Texture asteroid;
     private Star[] stars;
     private Asteroid[] asteroids;
+    private Music music;
 
     public Background(StarGame starGame) {
         this.starGame = starGame;
         this.textureCosmos = new Texture("bg.png");
         this.textureStar = new Texture("star16.png");
         this.asteroid = new Texture("asteroid.png");
+        this.music = Gdx.audio.newMusic(Gdx.files.internal("BGMusic.mp3"));
+        music.setLooping(true);
+        music.play();
         this.stars = new Star[STAR_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star();
