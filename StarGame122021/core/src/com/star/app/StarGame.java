@@ -11,6 +11,7 @@ public class StarGame extends ApplicationAdapter {
     private Background background;
     private Hero hero;
 
+
     public Hero getHero() {
         return hero;
     }
