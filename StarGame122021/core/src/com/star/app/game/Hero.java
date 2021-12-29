@@ -23,7 +23,6 @@ public class Hero {
     private int scoreView;
     private int hpMax = 100;
     private int hp;
-    private int hpView;
     private Circle hitArea;
     private boolean active;
 
@@ -55,9 +54,6 @@ public class Hero {
     public void addScore(int amount) {
         score += amount;
     }
-    public void lifeCounter(int amount) {
-        hp -= amount;
-    }
 
     public Circle getHitArea() {
         return hitArea;
@@ -71,7 +67,7 @@ public class Hero {
         this.angle = 0.0f;
         this.enginePower = 500.0f;
         this.hp = hpMax;
-        this.hitArea = new Circle(position, BASE_SIZE);
+        this.hitArea = new Circle(0,0,0);
 
     }
 
@@ -148,19 +144,17 @@ public class Hero {
             velocity.y *= -0.5f;
         }
         hitArea.setPosition(position);
+        hitArea.setRadius(BASE_SIZE / 2);
     }
 
-    public boolean takeDamage(int amount) {
+    //метод измения скорости при столновении с астероидом
+    public void collision(Object o) {
+        velocity.x *= -0.8f;
+        velocity.y *= -0.8f;
+    }
+
+    public void takeDamage(int amount) {
         hp -= amount;
-        if (hp <= 0) {
-            deactivate();
-            return true;
-        }
-        return false;
-    }
-
-    public void deactivate() {
-        active = false;
     }
 
 }

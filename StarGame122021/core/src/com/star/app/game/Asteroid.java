@@ -80,44 +80,44 @@ public class Asteroid implements Poolable {
         }
     }
 
-            public void render (SpriteBatch batch){
-                batch.draw(asteroidTexture, position.x - 128, position.y - 128, 128, 128,
-                        256, 256, scale, scale,
-                        angle);
-            }
+    public void render(SpriteBatch batch) {
+        batch.draw(asteroidTexture, position.x - 128, position.y - 128, 128, 128,
+                256, 256, scale, scale, angle);
+    }
 
-            public void deactivate () {
-                active = false;
-            }
+    public void deactivate() {
+        active = false;
+    }
 
-            public void update ( float dt){
-                position.mulAdd(velocity, dt);
-                angle += rotationSpeed * dt;
-                if (position.x < -BASE_RADIUS) {
-                    position.x = ScreenManager.SCREEN_WIDTH + BASE_RADIUS;
-                }
-                if (position.y < -BASE_RADIUS) {
-                    position.y = ScreenManager.SCREEN_HEIGHT + BASE_RADIUS;
-                }
-                if (position.x > ScreenManager.SCREEN_WIDTH + BASE_RADIUS) {
-                    position.x = -BASE_RADIUS;
-                }
-                if (position.y > ScreenManager.SCREEN_HEIGHT + BASE_RADIUS) {
-                    position.y = -BASE_RADIUS;
-                }
-                hitArea.setPosition(position);
-            }
+    public void update(float dt) {
+        position.mulAdd(velocity, dt);
+        angle += rotationSpeed * dt;
 
-            public void activate ( float x, float y, float vx, float vy, float scale){
-                position.set(x, y);
-                velocity.set(vx, vy);
-                active = true;
-                hpMax = (int) (10 * scale);
-                hp = hpMax;
-                angle = MathUtils.random(0.0f, 360.0f);
-                rotationSpeed = MathUtils.random(-180.0f, 180.0f);
-                this.scale = scale;
-                hitArea.setPosition(position);
-                hitArea.setRadius(BASE_RADIUS * scale * 0.9f);
-            }
+        if (position.x < -BASE_RADIUS) {
+            position.x = ScreenManager.SCREEN_WIDTH + BASE_RADIUS;
         }
+        if (position.y < -BASE_RADIUS) {
+            position.y = ScreenManager.SCREEN_HEIGHT + BASE_RADIUS;
+        }
+        if (position.x > ScreenManager.SCREEN_WIDTH + BASE_RADIUS) {
+            position.x = -BASE_RADIUS;
+        }
+        if (position.y > ScreenManager.SCREEN_HEIGHT + BASE_RADIUS) {
+            position.y = -BASE_RADIUS;
+        }
+        hitArea.setPosition(position);
+    }
+
+    public void activate(float x, float y, float vx, float vy, float scale) {
+        position.set(x, y);
+        velocity.set(vx, vy);
+        active = true;
+        hpMax = (int) (10 * scale);
+        hp = hpMax;
+        angle = MathUtils.random(0.0f, 360.0f);
+        rotationSpeed = MathUtils.random(-180.0f, 180.0f);
+        this.scale = scale;
+        hitArea.setPosition(position);
+        hitArea.setRadius(BASE_RADIUS * scale);
+    }
+}

@@ -53,10 +53,10 @@ public class GameController {
         }
         for (int j = 0; j < asteroidController.getActiveList().size(); j++) {
             Asteroid asteroid = asteroidController.getActiveList().get(j);
-            if (getHero().getHitArea().contains(asteroid.getPosition())) {
+            if (asteroid.getHitArea().contains(hero.getPosition())) {
+                hero.collision(asteroid);
                 asteroid.takeDamage(1);
                 hero.takeDamage(10);
-                System.out.println(hero.getHp());
                 if (asteroid.takeDamage(1)) {
                     hero.addScore(asteroid.getHpMax() * 100);
                 }
