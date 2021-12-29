@@ -1,37 +1,38 @@
 package com.star.app.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.star.app.helpers.ObjectPool;
 
 public class AsteroidController extends ObjectPool<Asteroid> {
-    private Texture asteroidTexture;
+    private GameController gc;
+
     @Override
     protected Asteroid newObject() {
-        return new Asteroid();
+        return new Asteroid(gc);
     }
-    public AsteroidController() {
-        this.asteroidTexture = new Texture("asteroid.png");
+
+    public AsteroidController(GameController gc) {
+        this.gc = gc;
     }
 
 
     public void render(SpriteBatch batch) {
         for (int i = 0; i < activeList.size(); i++) {
             Asteroid asteroid = activeList.get(i);
-                batch.draw(asteroidTexture, asteroid.getPosition().x - 128, asteroid.getPosition().y - 128, 128, 128, 256, 256,
-                        1, 1, 0, 0, 0, 256, 256, false, false);
+            asteroid.render(batch);
+        }
+    }
+
+        public void setup ( float x, float y, float vx, float vy, float scale){
+
+            getActiveElement().activate(x, y, vx, vy, scale);
+        }
+
+        public void update ( float dt){
+            for (int i = 0; i < activeList.size(); i++) {
+                activeList.get(i).update(dt);
             }
+            checkPool();
         }
-
-    public void setup(float x, float y, float vx, float vy){
-
-        getActiveElement().activate(x, y, vx, vy);
     }
 
-    public void update(float dt){
-        for (int i = 0; i < activeList.size(); i++) {
-            activeList.get(i).update(dt);
-        }
-        checkPool();
-    }
-}

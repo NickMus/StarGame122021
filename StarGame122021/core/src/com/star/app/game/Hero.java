@@ -4,48 +4,106 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import screen.ScreenManager;
+import screen.utils.Assets;
 
 public class Hero {
     private GameController gc;
-    private Texture texture;
+    private TextureRegion texture;
     private Vector2 position;
     private Vector2 velocity;
     private float angle;
     private float enginePower;
     private float fireTimer;
+    private int score;
+    private int scoreView;
+    private int hpMax = 100;
+    private int hp;
+    private int hpView;
+    private Circle hitArea;
+    private boolean active;
+
+    public int getHpMax() {
+        return hpMax;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    private final float BASE_SIZE = 64;
+
 
     public Vector2 getVelocity() {
         return velocity;
     }
 
+
+    public int getScoreView() {
+        return scoreView;
+    }
+
+
     public Vector2 getPosition() {
         return position;
     }
 
+    public void addScore(int amount) {
+        score += amount;
+    }
+    public void lifeCounter(int amount) {
+        hp -= amount;
+    }
+
+    public Circle getHitArea() {
+        return hitArea;
+    }
+
     public Hero(GameController gc) {
         this.gc = gc;
-        this.texture = new Texture("ship.png");
+        this.texture = Assets.getInstance().getAtlas().findRegion("ship");
         this.position = new Vector2(ScreenManager.SCREEN_WIDTH / 2, ScreenManager.SCREEN_HEIGHT / 2);
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
         this.enginePower = 500.0f;
+        this.hp = hpMax;
+        this.hitArea = new Circle(position, BASE_SIZE);
+
     }
 
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32,
                 64, 64, 1, 1,
-                angle, 0, 0, 64, 64, false, false);
+                angle);
     }
 
     public void update(float dt) {
         fireTimer += dt;
+
+        if (scoreView < score) {
+            scoreView += 2000 * dt;
+            if (scoreView > score) {
+                scoreView = score;
+            }
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (fireTimer > 0.2f) {
                 fireTimer = 0.0f;
-                gc.getBulletController().setup(position.x, position.y,
+                float wx = position.x + MathUtils.cosDeg(angle + 90) * 20;
+                float wy = position.y + MathUtils.sinDeg(angle + 90) * 20;
+
+                gc.getBulletController().setup(wx, wy,
+                        MathUtils.cosDeg(angle) * 500.0f + velocity.x,
+                        MathUtils.sinDeg(angle) * 500.0f + velocity.y);
+
+                wx = position.x + MathUtils.cosDeg(angle - 90) * 20;
+                wy = position.y + MathUtils.sinDeg(angle - 90) * 20;
+
+                gc.getBulletController().setup(wx, wy,
                         MathUtils.cosDeg(angle) * 500.0f + velocity.x,
                         MathUtils.sinDeg(angle) * 500.0f + velocity.y);
             }
@@ -89,6 +147,20 @@ public class Hero {
             position.y = ScreenManager.SCREEN_HEIGHT - 32f;
             velocity.y *= -0.5f;
         }
-
+        hitArea.setPosition(position);
     }
+
+    public boolean takeDamage(int amount) {
+        hp -= amount;
+        if (hp <= 0) {
+            deactivate();
+            return true;
+        }
+        return false;
+    }
+
+    public void deactivate() {
+        active = false;
+    }
+
 }
