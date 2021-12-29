@@ -1,12 +1,10 @@
-package com.star.app;
+package com.star.app.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import screen.ScreenManager;
 
 public class Background {
     private class Star {
@@ -22,8 +20,8 @@ public class Background {
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - starGame.getHero().getLastDisplacement().x * 25) * dt;
-            position.y += (velocity.y - starGame.getHero().getLastDisplacement().y * 25) * dt;
+            position.x += (velocity.x - gc.getHero().getVelocity().x * 0.1) * dt;
+            position.y += (velocity.y - gc.getHero().getVelocity().y * 0.1) * dt;
 
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
@@ -39,39 +37,34 @@ public class Background {
         public Asteroid() {
             this.position = new Vector2(MathUtils.random(-200, ScreenManager.SCREEN_WIDTH + 200),
                     MathUtils.random(-200, ScreenManager.SCREEN_HEIGHT + 200));
-            this.velocity = new Vector2(MathUtils.random(-60, -5), MathUtils.random(-15,15));
+            this.velocity = new Vector2(MathUtils.random(-60, -5), MathUtils.random(-15, 15));
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - starGame.getHero().getLastDisplacement().x * 10) * dt;
-            position.y += (velocity.y - starGame.getHero().getLastDisplacement().y * 10) * dt;
+            position.x += (velocity.x - gc.getHero().getVelocity().x * 0.10) * dt;
+            position.y += (velocity.y - gc.getHero().getVelocity().y * 0.10) * dt;
 
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
                 position.y = MathUtils.random(-200, ScreenManager.SCREEN_HEIGHT + 200);
             }
         }
-
     }
 
+
     private final int STAR_COUNT = 1000;
-    private final int ASTEROID_COUNT = 3;
-    private StarGame starGame;
+    private final int ASTEROID_COUNT = 5;
+    private GameController gc;
     private Texture textureCosmos;
     private Texture textureStar;
-    private Texture asteroid;
     private Star[] stars;
     private Asteroid[] asteroids;
-    private Music music;
+    private float fireTimer;
 
-    public Background(StarGame starGame) {
-        this.starGame = starGame;
+    public Background(GameController gc) {
+        this.gc = gc;
         this.textureCosmos = new Texture("bg.png");
         this.textureStar = new Texture("star16.png");
-        this.asteroid = new Texture("asteroid.png");
-        this.music = Gdx.audio.newMusic(Gdx.files.internal("BGMusic.mp3"));
-        music.setLooping(true);
-        music.play();
         this.stars = new Star[STAR_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star();
@@ -87,25 +80,27 @@ public class Background {
         for (int i = 0; i < stars.length; i++) {
             batch.draw(textureStar, stars[i].position.x - 8, stars[i].position.y - 8, 8, 8, 16, 16,
                     stars[i].scale, stars[i].scale, 0, 0, 0, 16, 16, false, false);
+
             if (MathUtils.random(0, 300) < 1) {
                 batch.draw(textureStar, stars[i].position.x - 8, stars[i].position.y - 8, 8, 8, 16, 16,
                         stars[i].scale * 2, stars[i].scale * 2, 0, 0, 0, 16, 16, false, false);
             }
 
-            for (int k = 0; k < asteroids.length; k++) {
-                batch.draw(asteroid, asteroids[k].position.x - 128, asteroids[k].position.y - 128, 128, 128, 256, 256,
-                        1, 1, 0, 0, 0, 256, 256, false, false);
-            }
         }
     }
 
-        public void update ( float dt){
-            for (int i = 0; i < stars.length; i++) {
-                stars[i].update(dt);
-            }
-            for (int k = 0; k < asteroids.length; k++) {
-                asteroids[k].update(dt);
-            }
+    public void update(float dt) {
+        for (int i = 0; i < stars.length; i++) {
+            stars[i].update(dt);
+        }
+        fireTimer += dt;
+        if (fireTimer > 1.5f) {
+            fireTimer = -1.5f;
+            gc.getAsteroidController().setup
+                    (ScreenManager.SCREEN_WIDTH+100
+                            , MathUtils.random(ScreenManager.SCREEN_HEIGHT)
+                            , MathUtils.random(-80, -5), MathUtils.random(-15, 15));
         }
     }
+}
 

@@ -1,4 +1,4 @@
-package com.star.app;
+package screen;
 
 public class ScreenManager {
     public static final int SCREEN_WIDTH = 1280;
