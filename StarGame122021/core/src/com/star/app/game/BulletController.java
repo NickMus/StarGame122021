@@ -1,6 +1,5 @@
 package com.star.app.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.star.app.helpers.ObjectPool;
@@ -8,13 +7,15 @@ import screen.utils.Assets;
 
 public class BulletController extends ObjectPool<Bullet> {
     private TextureRegion bulletTexture;
+    private GameController gc;
 
     @Override
     protected Bullet newObject() {
-        return new Bullet();
+        return new Bullet(gc);
     }
 
-    public BulletController() {
+    public BulletController(GameController gc) {
+        this.gc= gc;
         this.bulletTexture = Assets.getInstance().getAtlas().findRegion("bullet");
     }
 
@@ -25,11 +26,11 @@ public class BulletController extends ObjectPool<Bullet> {
         }
     }
 
-    public void setup(float x, float y, float vx, float vy) {
+    public void setup(float x, float y, float vx, float vy){
         getActiveElement().activate(x, y, vx, vy);
     }
 
-    public void update(float dt) {
+    public void update(float dt){
         for (int i = 0; i < activeList.size(); i++) {
             activeList.get(i).update(dt);
         }
