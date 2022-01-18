@@ -13,6 +13,20 @@ import screen.ScreenManager;
 import screen.utils.Assets;
 
 public class Hero {
+
+    public enum Skill {
+        HP_MAX(20, 10), HP(20, 10), WEAPON(100, 1),
+        MAGNET(50, 10);
+
+        int cost;
+        int power;
+
+        Skill(int cost, int power) {
+            this.cost = cost;
+            this.power = power;
+        }
+    }
+
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;
@@ -27,10 +41,17 @@ public class Hero {
     private StringBuilder sb;
     private Circle hitArea;
     private Weapon currentWeapon;
+    private Circle magneticField;
     private int money;
+    private Shop shop;
+
 
     public int getHp() {
         return hp;
+    }
+
+    public Circle getMagneticField() {
+        return magneticField;
     }
 
     public Weapon getCurrentWeapon() {
@@ -43,6 +64,9 @@ public class Hero {
 
     public Circle getHitArea() {
         return hitArea;
+    }
+    public void setPause(boolean pause) {
+        gc.setPause(pause);
     }
 
     public Vector2 getVelocity() {
@@ -57,6 +81,28 @@ public class Hero {
         score += amount;
     }
 
+    public Shop getShop() {
+        return shop;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+
+    public boolean isMoneyEnough(int amount) {
+        return money >= amount;
+    }
+
+    public void decreaseMoney(int amount) {
+        money -= amount;
+    }
+
+
     public Hero(GameController gc) {
         this.gc = gc;
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");
@@ -66,6 +112,8 @@ public class Hero {
         this.enginePower = 500.0f;
         this.hpMax = 10;
         this.hp = hpMax;
+        this.shop = new Shop(this);
+        this.magneticField = new Circle(position, 250);
         this.sb = new StringBuilder();
         this.hitArea = new Circle(position, 29);
         this.currentWeapon = new Weapon(gc, this, "Laser", 0.1f, 1, 600.0f, 300,
@@ -107,6 +155,33 @@ public class Hero {
                 currentWeapon.addAmmos( p.getPower()) ;
                 break;
         }
+    }
+
+    public boolean upgrade(Skill skill) {
+//        switch (skill) {
+//            case HP_MAX:
+//                hpMax += Skill.HP_MAX.power;
+//                return true;
+//            case HP:
+//                if (hp + Skill.HP.power <= hpMax) {
+//                    hp += Skill.HP.power;
+//                    return true;
+//                }
+//                break;
+//            case WEAPON:
+//                if (weaponNum < weapons.length - 1) {
+//                    weaponNum++;
+//                    currentWeapon = weapons[weaponNum];
+//                    return true;
+//                }
+//            case MAGNET:
+//                if (magneticField.radius < 500) {
+//                    magneticField.radius += Skill.MAGNET.power;
+//                    return true;
+//                }
+//        }
+//        return false;
+        return false;
     }
 
     public void update(float dt) {
@@ -159,6 +234,11 @@ public class Hero {
                         0.4f, 1.2f, 0.2f,
                         1.0f, 0.5f, 0, 1,
                         1, 1, 1, 0);
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+                shop.setVisible(true);
+                gc.setPause(true);
             }
 
         }

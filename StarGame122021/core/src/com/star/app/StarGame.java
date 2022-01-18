@@ -3,30 +3,45 @@ package com.star.app;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import screen.GameScreen;
+import screen.ScreenManager;
 
 public class StarGame extends Game {
     private SpriteBatch batch;
-    private GameScreen gameScreen;
+
+
 
     @Override
     public void create() {
         this.batch = new SpriteBatch();
-        gameScreen = new GameScreen(batch);
-        setScreen(gameScreen);
+        ScreenManager.getInstance().init(this, batch);
+        ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
     }
 
     @Override
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
         getScreen().render(dt);
-    }
+//        makePause(dt);
 
+    }
 
 
     @Override
     public void dispose() {
         batch.dispose();
     }
+
+//    public void makePause(float dt) {
+//
+////        boolean isPaused = false;
+////        if (Gdx.input.isKeyJustPressed(Input.Keys.P) && !isPaused) {
+////            System.out.println("backspace");
+////            dt = 0;
+////            getScreen().render(dt);
+////        }else {
+////            g
+////        }
+//    }
 }
