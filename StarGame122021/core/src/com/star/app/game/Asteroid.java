@@ -11,6 +11,7 @@ import screen.utils.Assets;
 
 public class Asteroid implements Poolable {
     private GameController gc;
+    private TextureRegion texture;
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
@@ -20,15 +21,12 @@ public class Asteroid implements Poolable {
     private float rotationSpeed;
     private Circle hitArea;
     private float scale;
-    private TextureRegion asteroidTexture;
 
     private final float BASE_SIZE = 256;
     private final float BASE_RADIUS = BASE_SIZE / 2;
 
-
-    @Override
-    public boolean isActive() {
-        return active;
+    public float getScale() {
+        return scale;
     }
 
     public int getHpMax() {
@@ -43,6 +41,11 @@ public class Asteroid implements Poolable {
         return hitArea;
     }
 
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
     public Vector2 getPosition() {
         return position;
     }
@@ -53,12 +56,17 @@ public class Asteroid implements Poolable {
 
     public Asteroid(GameController gc) {
         this.gc = gc;
-        this.asteroidTexture = Assets.getInstance().getAtlas().findRegion("asteroid");
+        this.texture = Assets.getInstance().getAtlas().findRegion("asteroid");
         this.position = new Vector2(0, 0);
         this.velocity = new Vector2(0, 0);
-        this.active = false;
         this.hitArea = new Circle(0, 0, 0);
+        this.active = false;
+    }
 
+    public void render(SpriteBatch batch) {
+        batch.draw(texture, position.x - 128, position.y - 128, 128, 128,
+                256, 256, scale, scale,
+                angle);
     }
 
     public boolean takeDamage(int amount) {
@@ -67,7 +75,7 @@ public class Asteroid implements Poolable {
             deactivate();
             if (scale > 0.3f) {
                 gc.getAsteroidController().setup(position.x, position.y,
-                        MathUtils.random(-50, 100), MathUtils.random(-150, 150), scale - 0.25f);
+                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.25f);
                 gc.getAsteroidController().setup(position.x, position.y,
                         MathUtils.random(-190, 190), MathUtils.random(-190, 190), scale - 0.25f);
                 gc.getAsteroidController().setup(position.x, position.y,
@@ -80,11 +88,6 @@ public class Asteroid implements Poolable {
         }
     }
 
-    public void render(SpriteBatch batch) {
-        batch.draw(asteroidTexture, position.x - 128, position.y - 128, 128, 128,
-                256, 256, scale, scale, angle);
-    }
-
     public void deactivate() {
         active = false;
     }
@@ -92,7 +95,6 @@ public class Asteroid implements Poolable {
     public void update(float dt) {
         position.mulAdd(velocity, dt);
         angle += rotationSpeed * dt;
-
         if (position.x < -BASE_RADIUS) {
             position.x = ScreenManager.SCREEN_WIDTH + BASE_RADIUS;
         }
@@ -118,6 +120,6 @@ public class Asteroid implements Poolable {
         rotationSpeed = MathUtils.random(-180.0f, 180.0f);
         this.scale = scale;
         hitArea.setPosition(position);
-        hitArea.setRadius(BASE_RADIUS * scale);
+        hitArea.setRadius(BASE_RADIUS * scale * 0.9f);
     }
 }

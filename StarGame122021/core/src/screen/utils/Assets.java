@@ -38,8 +38,12 @@ public class Assets {
             case GAME:
                 assetManager.load("images/images", TextureAtlas.class);
                 createStandardFont(32);
-                assetManager.finishLoading();
-                textureAtlas = assetManager.get("images/images", TextureAtlas.class);
+                break;
+            case MENU:
+            case GAME_OVER:
+                assetManager.load("images/images", TextureAtlas.class);
+                createStandardFont(72);
+                createStandardFont(24);
                 break;
         }
     }
@@ -56,6 +60,10 @@ public class Assets {
         fontParameter.fontParameters.shadowOffsetY = 1;
         fontParameter.fontParameters.shadowColor = Color.DARK_GRAY;
         assetManager.load("fonts/font" + size + ".ttf", BitmapFont.class, fontParameter);
+    }
+
+    public void makeLinks(){
+        textureAtlas = assetManager.get("images/images", TextureAtlas.class);
     }
 
     public void clear() {
