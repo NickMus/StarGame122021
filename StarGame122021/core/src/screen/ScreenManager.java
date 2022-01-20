@@ -1,6 +1,7 @@
 package screen;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -24,6 +25,7 @@ public class ScreenManager {
     private GameOverScreen gameOverScreen;
     private Screen targetScreen;
     private Viewport viewport;
+    private Music music;
 
     private static ScreenManager ourInstance = new ScreenManager();
 

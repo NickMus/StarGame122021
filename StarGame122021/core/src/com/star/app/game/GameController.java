@@ -1,15 +1,12 @@
 package com.star.app.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.star.app.StarGame;
 import screen.ScreenManager;
-import screen.utils.Assets;
 
 public class GameController {
     private Background background;
@@ -17,13 +14,13 @@ public class GameController {
     private BulletController bulletController;
     private ParticleController particleController;
     private PowerUpsController powerUpsController;
+    private Ship ship;
     private Hero hero;
     private Vector2 tempVec;
     private Stage stage;
     private boolean pause;
     private int level;
     private float timer;
-    private Music music;
     private StringBuilder sb;
     private InfoController infoController;
 
@@ -63,6 +60,10 @@ public class GameController {
         return hero;
     }
 
+    public Ship getShip() {
+        return ship;
+    }
+
     public Background getBackground() {
         return background;
     }
@@ -74,6 +75,7 @@ public class GameController {
     public GameController(SpriteBatch batch) {
         this.background = new Background(this);
         this.hero = new Hero(this);
+        this.ship = new Ship(this, 10, 10);
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
         this.particleController = new ParticleController();
@@ -83,9 +85,6 @@ public class GameController {
         this.tempVec = new Vector2();
         this.level = 1;
         this.sb = new StringBuilder();
-//        this.music = Assets.getInstance().getAssetManager().get("audio/mortal.mp3");
-//        this.music.setLooping(true);
-//        this.music.play();
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         stage.addActor(hero.getShop());
         Gdx.input.setInputProcessor(stage);
@@ -104,6 +103,7 @@ public class GameController {
         timer += dt;
         background.update(dt);
         hero.update(dt);
+        ship.update(dt);
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);

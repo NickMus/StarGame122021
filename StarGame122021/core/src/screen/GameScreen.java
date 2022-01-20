@@ -2,6 +2,7 @@ package screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.star.app.game.GameController;
 import com.star.app.game.WorldRenderer;
@@ -10,6 +11,7 @@ import screen.utils.Assets;
 public class GameScreen extends AbstractScreen {
     private GameController gc;
     private WorldRenderer worldRenderer;
+    private Music music;
 
     public GameScreen(SpriteBatch batch) {
         super(batch);
@@ -20,6 +22,9 @@ public class GameScreen extends AbstractScreen {
         Assets.getInstance().loadAssets(ScreenManager.ScreenType.GAME);
         this.gc = new GameController(batch);
         this.worldRenderer = new WorldRenderer(gc, batch);
+        this.music = Gdx.audio.newMusic(Gdx.files.internal("audio/MenuMusic.mp3"));
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -39,5 +44,10 @@ public class GameScreen extends AbstractScreen {
             delta = Gdx.graphics.getDeltaTime();
         }
         return delta;
+    }
+
+    @Override
+    public void dispose() {
+        music.stop();
     }
 }
