@@ -49,6 +49,14 @@ public class Background {
         }
     }
 
+    public Background() {
+        this.textureCosmos = new Texture("images/bg.png");
+        this.textureStar = Assets.getInstance().getAtlas().findRegion("star16");
+        this.stars = new Star[STAR_COUNT];
+        for (int i = 0; i < stars.length; i++) {
+            stars[i] = new Star();
+        }
+    }
 
     public void render(SpriteBatch batch) {
         batch.draw(textureCosmos, 0, 0);

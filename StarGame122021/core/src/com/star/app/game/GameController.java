@@ -1,10 +1,11 @@
 package com.star.app.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.star.app.StarGame;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import screen.ScreenManager;
 
 public class GameController {
@@ -13,9 +14,35 @@ public class GameController {
     private BulletController bulletController;
     private ParticleController particleController;
     private PowerUpsController powerUpsController;
+    private Ship ship;
     private Hero hero;
     private Vector2 tempVec;
-    private StarGame starGame;
+    private Stage stage;
+    private boolean pause;
+    private int level;
+    private float timer;
+    private StringBuilder sb;
+    private InfoController infoController;
+
+    public float getTimer() {
+        return timer;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public InfoController getInfoController() {
+        return infoController;
+    }
 
     public PowerUpsController getPowerUpsController() {
         return powerUpsController;
@@ -33,6 +60,10 @@ public class GameController {
         return hero;
     }
 
+    public Ship getShip() {
+        return ship;
+    }
+
     public Background getBackground() {
         return background;
     }
@@ -41,14 +72,24 @@ public class GameController {
         return bulletController;
     }
 
-    public GameController() {
+    public GameController(SpriteBatch batch) {
         this.background = new Background(this);
         this.hero = new Hero(this);
+        this.ship = new Ship(this, 10, 10);
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
         this.particleController = new ParticleController();
         this.powerUpsController = new PowerUpsController(this);
         this.tempVec = new Vector2();
+        this.infoController = new InfoController();
+        this.tempVec = new Vector2();
+        this.level = 1;
+        this.sb = new StringBuilder();
+        this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        stage.addActor(hero.getShop());
+        Gdx.input.setInputProcessor(stage);
+
+        generateBigAsteroids(1);
 
         for (int i = 0; i < 3; i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
@@ -59,13 +100,23 @@ public class GameController {
     }
 
     public void update(float dt) {
+        timer += dt;
         background.update(dt);
         hero.update(dt);
+        ship.update(dt);
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);
         powerUpsController.update(dt);
+        infoController.update(dt);
         checkCollisions();
+
+        if (asteroidController.getActiveList().size() == 0) {
+            level++;
+            generateBigAsteroids(Math.min(level, 3));
+            timer = 0.0f;
+        }
+        stage.act(dt);
     }
 
     private void checkCollisions() {
@@ -121,11 +172,24 @@ public class GameController {
 
         for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
             PowerUp p = powerUpsController.getActiveList().get(i);
-            if(hero.getHitArea().contains(p.getPosition())){
+            if (hero.getMagneticField().contains(p.getPosition())) {
+                tempVec.set(hero.getPosition()).sub(p.getPosition()).nor();
+                p.getVelocity().mulAdd(tempVec, 100);
+            }
+            if (hero.getHitArea().contains(p.getPosition())) {
                 hero.consume(p);
-                particleController.getEffectBuilder().takePowerUpEffect(p.getPosition().x,p.getPosition().y );
+                particleController.getEffectBuilder().takePowerUpEffect(p.getPosition().x, p.getPosition().y);
                 p.deactivate();
             }
+        }
+    }
+
+    public void generateBigAsteroids(int n) {
+        for (int i = 0; i < n; i++) {
+            asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
+                    MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
+                    MathUtils.random(-200, 200),
+                    MathUtils.random(-200, 200), 1.0f);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 public class Weapon {
+    private Ship ship;
     private GameController gc;
     private Hero hero;
     private String title;
@@ -47,6 +48,18 @@ public class Weapon {
         this.curBullets = maxBullets;
     }
 
+    public Weapon(GameController gc, Ship ship, String title, float firePeriod, int damage,
+                  float bulletSpeed, int maxBullets, Vector3[] slots) {
+        this.gc = gc;
+        this.ship = ship;
+        this.title = title;
+        this.firePeriod = firePeriod;
+        this.damage = damage;
+        this.bulletSpeed = bulletSpeed;
+        this.maxBullets = maxBullets;
+        this.slots = slots;
+        this.curBullets = maxBullets;
+    }
     public void fire() {
         if (curBullets > 0) {
             curBullets--;

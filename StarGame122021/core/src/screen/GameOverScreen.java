@@ -1,6 +1,8 @@
 package screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -22,12 +24,15 @@ public class GameOverScreen extends AbstractScreen {
     private BitmapFont font72;
     private BitmapFont font24;
     private Stage stage;
+    private Music sound;
 
     @Override
     public void show() {
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
+        this.sound = Gdx.audio.newMusic(Gdx.files.internal("audio/GameOver.mp3"));
+        sound.play();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin();
         skin.addRegions(Assets.getInstance().getAtlas());
@@ -62,6 +67,8 @@ public class GameOverScreen extends AbstractScreen {
         stage.addActor(btnExitGame);
 
         skin.dispose();
+
+
 
 
     }

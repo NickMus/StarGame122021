@@ -72,7 +72,9 @@ public class Asteroid implements Poolable {
     public boolean takeDamage(int amount) {
         hp -= amount;
         if (hp <= 0) {
+//            Ship ship = new Ship(gc, 10, 10);
             deactivate();
+
             if (scale > 0.3f) {
                 gc.getAsteroidController().setup(position.x, position.y,
                         MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.25f);

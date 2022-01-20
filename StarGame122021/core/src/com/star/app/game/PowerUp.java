@@ -1,5 +1,6 @@
 package com.star.app.game;
 
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.star.app.helpers.Poolable;
@@ -22,6 +23,16 @@ public class PowerUp implements Poolable {
     private boolean active;
     private Type type;
     private int power;
+    private Circle powerUpCircle;
+
+    public Circle getPowerUpCircle() {
+        return powerUpCircle;
+    }
+
+    public void setVelocity(Vector2 velocity) {
+        this.velocity = velocity;
+    }
+
 
     public Type getType() {
         return type;
@@ -57,6 +68,7 @@ public class PowerUp implements Poolable {
         this.position = new Vector2(0, 0);
         this.velocity = new Vector2(0, 0);
         this.active = false;
+        this.powerUpCircle = new Circle(position, 30);
     }
 
     public void activate(Type type, float x, float y, int power) {
